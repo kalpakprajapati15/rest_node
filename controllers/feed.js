@@ -1,5 +1,6 @@
 const Post = require('../models/post');
 const User = require('../models/user')
+const io = require('../socket');
 exports.getPosts = (req, res, next) => {
     Post.find().then(posts => {
         res.status(200).json({
@@ -38,6 +39,8 @@ exports.savePost = (req, res, next) => {
                 })
             }
             const post = new Post({ title: req.body.title, content: req.body.content, createdBy: { name: user.name } });
+            io.getIO().emit('Created Post', post);
+            console.log(io.getIO())
             post.save().then(postObj => {
                 res.status(201).json({
                     result: postObj,
@@ -57,3 +60,4 @@ exports.deletePost = (req, res, next) => {
         })
     })
 }
+

@@ -13,7 +13,17 @@ const UserSchema = new Schema({
     password: {
         type: String,
         required: true
+    },
+    socketId: {
+        type: String
+    },
+    contacts: [{
+        userId: {
+            type: Schema.Types.ObjectId,
+            ref: 'User'
+        }
     }
+    ]
 });
 
-module.exports = mongoose.model('user', UserSchema);
+module.exports = mongoose.model('User', UserSchema);
