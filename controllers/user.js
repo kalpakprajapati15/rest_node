@@ -1,5 +1,3 @@
-const Post = require('../models/post');
-const user = require('../models/user');
 const User = require('../models/user')
 
 exports.setSocketId = (req, res, next) => {
@@ -27,7 +25,7 @@ exports.getContacts = (req, res, next) => {
         })
         return res.status(200).json({
             status: 'Success',
-            result: {contacts}
+            result: { contacts }
         })
     })
 }
@@ -37,11 +35,11 @@ exports.postContact = (req, res, next) => {
     const contactEmail = req.body.email;
 
     User.findOne({ email: contactEmail }).then(contact => {
-        if(!contact){
+        if (!contact) {
             return res.status(401).json({
                 status: 'failed',
                 message: ['User doesnt exist']
-            }) 
+            })
         }
         if (user.contacts.find(oval => oval.userId.toString() === contact._id.toString())) {
             return res.status(401).json({
@@ -56,9 +54,20 @@ exports.postContact = (req, res, next) => {
             })
         }
         user.contacts.push({ userId: contact._id });
-        user.save().then(savedRes => {
+        contact.contacts.push({ userId: user._id });
+        Promise.all([user.save(), contact.save()]).then(([userSave, contactSave]) => {
+            let io;
+            try {
+                io = require('../socket').getIO();
+            } catch (e) {
+                console.log(e);
+            }
+            console.log(io, "id", contact.socketId);
+            if (io) {
+                io.to(contact.socketId).emit('Contact Added', true);
+            }
             return res.status(201).json({
-                result: savedRes,
+                result: userSave,
                 status: 'Success'
             })
         })
