@@ -11,6 +11,9 @@ const MONGODB_URI = "mongodb+srv://kalpakprajapati:" + `${encodeURIComponent(pas
 app.use(bodyParser.json()); // for json requests. (REST APIs)
 const User = require('./models/user');
 const bcrypt = require('bcryptjs');
+const schema = require('./graphql/schema');
+const graphQLResolver = require('./graphql/resolvers');
+const { graphqlHTTP } = require('express-graphql')
 const { watchMessage } = require('./controllers/message');
 
 // To handle the cors error. 
@@ -18,13 +21,29 @@ app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*');// allow access from all the domains, we can also choose specific inestead of *(All)
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE'); // which methods to allow. 
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, x-token'); // allow specific headers. 
+    if (req.method === 'OPTIONS') {
+        return res.sendStatus(200);
+    }
     next();
 });
-
-app.use(feedRoutes);
-app.use(authRoutes);
-app.use(userRoutes);
-app.use(messageRoutes);
+app.use('/graphql', graphqlHTTP({
+    schema: schema,
+    rootValue: graphQLResolver,
+    graphiql: true,
+    formatError(err) {
+        if (!err.originalError) {
+            return err;
+        }
+        const data = err.originalError.data;
+        const message = err.message || 'An error occurred.';
+        const code = err.originalError.code || 500;
+        return { message: message, status: code, data: data };
+    }
+}))
+// app.use(feedRoutes);
+// app.use(authRoutes);
+// app.use(userRoutes);
+// app.use(messageRoutes);
 
 mongoose
     .connect(
