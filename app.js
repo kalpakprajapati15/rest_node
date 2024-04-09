@@ -6,7 +6,7 @@ const feedRoutes = require('./routes/feed');
 const authRoutes = require('./routes/auth');
 const userRoutes = require('./routes/user');
 const messageRoutes = require('./routes/message');
-const password = require('./utils/password');
+const password = require('./utils/passwordd');
 const MONGODB_URI = "mongodb+srv://kalpakprajapati:" + `${encodeURIComponent(password.password)}` + "@cluster0.pzrjjcl.mongodb.net/post";
 app.use(bodyParser.json()); // for json requests. (REST APIs)
 const User = require('./models/user');

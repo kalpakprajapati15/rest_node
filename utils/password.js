@@ -1,1 +1,0 @@
-exports.password = 'Kjp@15111820';

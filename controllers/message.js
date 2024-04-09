@@ -19,12 +19,16 @@ this.handleMessage = (socket, clientMessage, fromUser) => {
     User.findOne({ _id: clientMessage.toId }).then(toUser => {
         if (fromUser && toUser) {
             const message = new Message({ text: clientMessage.text, toId: toUser._id, fromId: fromUser._id });
-            socket.to(toUser.socketId).emit('Client Get Message', clientMessage)
+            // emit message ToUser
+            socket.to(toUser.socketId).emit('Client Get Message', message);
+            // emit message with Id so it can be updated in message. 
+            socket.emit('Client Update Message Id', message);
+            console.log(fromUser.socketId);
             message.save().then(messageObj => {
                 console.log(messageObj);
-            })
+            });
         }
-    })
+    });
 }
 
 exports.getMessages = (req, res, next) => {
