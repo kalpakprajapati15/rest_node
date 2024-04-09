@@ -35,7 +35,7 @@ mongoose
         // bcrypt.hash('123456', 12).then(hashed => {
         //     const user = new User({ email: 'Harvey.spectre@gmail.com', name: 'Harvey Spectre', password: hashed });
         //     user.save().then(() => {
-        const server = app.listen(8080, '192.168.7.50');
+        const server = app.listen(8080);
         const io = require('./socket').init(server);
         io.on('connection', (socket) => {
             console.log('socket connected', socket.id);

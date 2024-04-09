@@ -49,7 +49,7 @@ exports.postContact = (req, res, next) => {
                 message: ['Contact already exists']
             })
         }
-        if (user.contacts.find(oval => oval.userId.toString() === user._id.toString())) {
+        if (contact._id.toString() === user._id.toString()) {
             return res.status(401).json({
                 status: 'failed',
                 message: ['Cannot add self as a contact']
