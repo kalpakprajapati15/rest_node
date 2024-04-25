@@ -10,7 +10,7 @@ const password = require('./utils/passwordd');
 const MONGODB_URI = "mongodb+srv://kalpakprajapati:" + `${encodeURIComponent(password.password)}` + "@cluster0.pzrjjcl.mongodb.net/post";
 app.use(bodyParser.json()); // for json requests. (REST APIs)
 const User = require('./models/user');
-const bcrypt = require('bcryptjs');
+
 const { watchMessage } = require('./controllers/message');
 
 // To handle the cors error. 
